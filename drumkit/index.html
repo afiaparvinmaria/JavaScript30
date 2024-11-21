@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>JS Drum kit</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="https://fav.farm/🔥" />
+  </head>
+  <body>
+    <div class="keys">
+      <div data-sf="65" class="key">
+        <kbd>A</kbd>
+        <span class="sound">clap</span>
+      </div>
+
+      <div data-sf="83" class="key">
+        <kbd>S</kbd>
+        <span class="sound">hihat</span>
+      </div>
+
+      <div data-sf="68" class="key">
+        <kbd>D</kbd>
+        <span class="sound">kick</span>
+      </div>
+
+      <div data-sf="70" class="key">
+        <kbd>F</kbd>
+        <span class="sound">openhat</span>
+      </div>
+
+      <div data-sf="71" class="key">
+        <kbd>G</kbd>
+        <span class="sound">boom</span>
+      </div>
+
+      <div data-sf="72" class="key">
+        <kbd>H</kbd>
+        <span class="sound">ride</span>
+      </div>
+
+      <div data-sf="74" class="key">
+        <kbd>J</kbd>
+        <span class="sound">snare</span>
+      </div>
+
+      <div data-sf="75" class="key">
+        <kbd>K</kbd>
+        <span class="sound">tom</span>
+      </div>
+
+      <div data-sf="76" class="key">
+        <kbd>L</kbd>
+        <span class="sound">tink</span>
+      </div>
+    </div>
+
+    <audio data-sf="65" src="sounds/clap.wav"></audio>
+    <!-- The <audio> tag is used to play sound files on your webpage.-->
+    <audio data-sf="83" src="sounds/hihat.wav"></audio>
+    <audio data-sf="68" src="sounds/kick.wav"></audio>
+    <audio data-sf="70" src="sounds/openhat.wav"></audio>
+    <audio data-sf="71" src="sounds/boom.wav"></audio>
+    <audio data-sf="72" src="sounds/ride.wav"></audio>
+    <audio data-sf="74" src="sounds/snare.wav"></audio>
+    <audio data-sf="75" src="sounds/tom.wav"></audio>
+    <audio data-sf="76" src="sounds/tink.wav"></audio>
+
+    <button id="playButton">Play Beat</button>
+
+    <script>
+      const beatPattern = [
+      { keyCode: 65, time: 0 }, // Clap
+        { keyCode: 83, time: 0.5 }, // Hihat
+        { keyCode: 68, time: 1 }, // Kick
+        { keyCode: 70, time: 1.5 }, // Openhat
+        { keyCode: 71, time: 2 }, // Boom
+        { keyCode: 72, time: 2.5 }, // Ride
+        { keyCode: 74, time: 3 }, // Snare
+        { keyCode: 75, time: 3.5 }, // Tom
+        { keyCode: 76, time: 4 }, // Tink
+
+      ];
+
+      function playBeat() {
+        beatPattern.forEach((note) => {
+          setTimeout(() => {
+            const audio = document.querySelector(
+              `audio[data-sf="${note.keyCode}"]`
+            );
+            if (audio) {
+              audio.currentTime = 0;
+              audio.play();
+            }
+          }, note.time * 1000); // Convert seconds to milliseconds
+        });
+      }
+
+      const playButton = document.getElementById("playButton");
+      playButton.addEventListener("click", function () {
+         playBeat();
+      });
+
+
+      function playsound(e) {
+        const audio = document.querySelector(`audio[data-sf="${e.keyCode}"]`); //document.queryselector= it looks for an <audio> element with a specific data-sf attribute.
+        const key = document.querySelector(`.key[data-sf="${e.keyCode}"]`); //this line is for audio and actual key sync and to add animations(.key is a css selector)
+        if (!audio) return;
+        audio.currentTime = 0;
+        audio.volume = 0.6;
+        audio.play();
+        key.classList.add("playing"); // when we will press the key playing class will be added in the key element
+        //key.classList.remove('playing')
+      }
+
+
+      function removetransition(e) {
+        if (e.propertyName !== "transform") return;
+        this.classList.remove("playing");
+      }
+      const keys = document.querySelectorAll(`.key`); //keys is a nodelist here
+      keys.forEach((key) =>
+        key.addEventListener("transitionend", removetransition)
+      ); //TransitionEvent is an object associated with transitionend
+      window.addEventListener("keydown", playsound);
+    </script>
+  </body>
+</html>
